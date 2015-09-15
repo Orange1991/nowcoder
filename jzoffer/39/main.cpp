@@ -12,27 +12,34 @@ struct TreeNode {
 class Solution {
 public:
     bool IsBalanced_Solution(TreeNode* pRoot) {
-        if (pRoot == NULL)
-            return true;
-
-        int lHegiht = Height(pRoot->left),
-            rHeight = Height(pRoot->right);
-
-        int diff = lHegiht - rHeight;
-        if (diff < 0) diff = -diff;
-        if (diff > 1)
-            return false;
-
-        return IsBalanced_Solution(pRoot->left)
-            && IsBalanced_Solution(pRoot->right);
+        int height = 0;
+        return IsBalanceTree(pRoot, height);
     }
 private:
-    int Height(TreeNode* pRoot) {
-        if (pRoot == NULL)
-            return 0;
-        int lHeight = Height(pRoot->left);
-        int rHeight = Height(pRoot->right);
-        return (lHeight > rHeight ? lHeight : rHeight) + 1;
+    bool IsBalanceTree(TreeNode* pRoot, int& height) {
+        if (pRoot == NULL)  // 空树是平衡二叉树
+            return true;
+
+        int leftSubTreeHeight = 0, rightSubTreeHeight = 0;
+        // 验证左子树是否是平衡二叉树
+        if (!IsBalanceTree(pRoot->left, leftSubTreeHeight))
+            return false;
+        // 验证右子树是否是平衡二叉树
+        if (!IsBalanceTree(pRoot->right, rightSubTreeHeight))
+            return false;
+
+        // 验证左右子树的深度是否符合条件
+        int diff = leftSubTreeHeight - rightSubTreeHeight;
+        if (diff < 0) 
+            diff = -diff;
+        if (diff > 1) 
+            return false;
+
+        // 为当前子树的深度赋值
+        height = leftSubTreeHeight > rightSubTreeHeight
+                ? leftSubTreeHeight + 1
+                : rightSubTreeHeight + 1;
+        return true;
     }
 };
 
